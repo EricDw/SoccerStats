@@ -11,17 +11,19 @@ namespace SoccerStats
     {
         static void Main(string[] args)
         {
-
             string currentDircetory = Directory.GetCurrentDirectory();
             DirectoryInfo directory = new DirectoryInfo(currentDircetory);
+            var fileName = Path.Combine(directory.FullName, "data.txt");
+            var file = new FileInfo(fileName);
 
-            var files = directory.GetFiles();
-
-            foreach (var file in files)
+            if(file.Exists)
             {
-                Console.WriteLine(file.Name);
+                using (var reader = new StreamReader(file.FullName))
+                { 
+                    Console.SetIn(reader);
+                    Console.WriteLine(Console.ReadLine());
+                }
             }
-            Console.Read();
         }
     }
 }
