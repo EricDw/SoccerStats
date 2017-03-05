@@ -71,7 +71,6 @@ namespace SoccerStats
                     soccerResults.Add(gameResult);
                 }
             }
-
             return soccerResults;
         }
     }
