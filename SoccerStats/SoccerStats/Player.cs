@@ -16,7 +16,7 @@ namespace SoccerStats
     public class Player
     {
         [JsonProperty(PropertyName = "first_name")]
-        public string firstName { get; set; }
+        public string FirstName { get; set; }
 
         [JsonProperty(PropertyName = "id")]
         public int Id { get; set; }
