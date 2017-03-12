@@ -5,52 +5,58 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using Newtonsoft.Json;
+using System.Net;
 
 namespace SoccerStats
 {
     class Program
     {
+
+       
+
         static void Main(string[] args)
         {
-            string currentDircetory = Directory.GetCurrentDirectory();
-            DirectoryInfo directory = new DirectoryInfo(currentDircetory);
-            var fileName = Path.Combine(directory.FullName, "SoccerGameResults.csv");
-            var fileContents = ReadSoccerResults(fileName);
-            fileName = Path.Combine(directory.FullName, "players.json");
-            var players = DeserializePlayers(fileName);
-            var topTenPlayers = GetTopTenPlayers(players);
+            //string currentDircetory = Directory.GetCurrentDirectory();
+            //DirectoryInfo directory = new DirectoryInfo(currentDircetory);
+            //var fileName = Path.Combine(directory.FullName, "SoccerGameResults.csv");
+            //var fileContents = ReadSoccerResults(fileName);
+            //fileName = Path.Combine(directory.FullName, "players.json");
+            //var players = DeserializePlayers(fileName);
+            //var topTenPlayers = GetTopTenPlayers(players);
 
 
-            foreach (var player in players)
-            {
-                Console.WriteLine(
-                    String.Format(
-                    "Team: {0}, ID: {1}, First name: {2}, Last name: {3}, Points per game: {4}", 
+            //foreach (var player in players)
+            //{
+            //    Console.WriteLine(
+            //        String.Format(
+            //        "Team: {0}, ID: {1}, First name: {2}, Last name: {3}, Points per game: {4}", 
                     
-                    player.TeamName,
-                    player.Id, 
-                    player.firstName, 
-                    player.LastName, 
-                    player.PointsPerGame
-                    )
-                );
-            }
+            //        player.TeamName,
+            //        player.Id, 
+            //        player.firstName, 
+            //        player.LastName, 
+            //        player.PointsPerGame
+            //        )
+            //    );
+            //}
 
-            Console.WriteLine("\n The top ten players of the season are: \n");
+            //Console.WriteLine("\n The top ten players of the season are: \n");
 
-            foreach (var player in topTenPlayers)
-            {
-                Console.WriteLine(
-                    String.Format(
-                        "Name: {0} {1}, Points Per Game: {2}",
-                        player.firstName,
-                        player.LastName,
-                        player.PointsPerGame
-                        )
-                    );
-            }
-            fileName = Path.Combine(directory.FullName, "topTenPlayers.json");
-            SerialzePlayersToFile(topTenPlayers, fileName);
+            //foreach (var player in topTenPlayers)
+            //{
+            //    Console.WriteLine(
+            //        String.Format(
+            //            "Name: {0} {1}, Points Per Game: {2}",
+            //            player.firstName,
+            //            player.LastName,
+            //            player.PointsPerGame
+            //            )
+            //        );
+            //}
+            //fileName = Path.Combine(directory.FullName, "topTenPlayers.json");
+            //SerialzePlayersToFile(topTenPlayers, fileName);
+
+            Console.WriteLine(GetNewsForPlayer("Diego Valeri"));
         }
 
         public static string ReadFile(string fileName)
@@ -134,13 +140,43 @@ namespace SoccerStats
             return topTenPlayers;
         }
 
-        public static void SerialzePlayersToFile(List<Player> players, String fileName)
+        public static void SerialzePlayersToFile(List<Player> players, string fileName)
         {
             var serializer = new JsonSerializer();
             using (var writer = new StreamWriter(fileName))
             using (var jsonWriter = new JsonTextWriter(writer))
             {
                 serializer.Serialize(jsonWriter, players);
+            }
+        }
+
+        public static string GetGoogleHomePage()
+        {
+            var webClient = new WebClient();
+            byte[] googleHomePage = webClient.DownloadData("https://www.google.com");
+
+            using (var stream = new MemoryStream(googleHomePage))
+            using (var reader = new StreamReader(stream))
+            {
+                return reader.ReadToEnd();
+            }
+        }
+
+        public static string GetNewsForPlayer(string playerName)
+        {
+            var webClient = new WebClient();
+            webClient.Headers.Add("Ocp-Apim-Subscription-Key", Keys.Key1);
+            byte[] searchResults = webClient.DownloadData(
+                string.Format(
+                    " https://api.cognitive.microsoft.com/bing/v5.0/news/search?q={0}&mkt=en-us",
+                    playerName
+                    )
+                );
+
+            using (var stream = new MemoryStream(searchResults))
+            using (var reader = new StreamReader(stream))
+            {
+                return reader.ReadToEnd();
             }
         }
     }
