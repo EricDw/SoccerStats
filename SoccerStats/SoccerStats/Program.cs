@@ -21,7 +21,17 @@ namespace SoccerStats
 
             foreach (var player in players)
             {
-                Console.WriteLine(player.second_name);
+                Console.WriteLine(
+                    String.Format(
+                    "Team: {0}, ID: {1}, First name: {2}, Last name: {3}, Points per game: {4}", 
+                    
+                    player.TeamName,
+                    player.Id, 
+                    player.firstName, 
+                    player.LastName, 
+                    player.PointsPerGame
+                    )
+                );
             }
         }
 
