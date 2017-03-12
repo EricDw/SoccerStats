@@ -18,6 +18,8 @@ namespace SoccerStats
             var fileContents = ReadSoccerResults(fileName);
             fileName = Path.Combine(directory.FullName, "players.json");
             var players = DeserializePlayers(fileName);
+            var topTenPlayers = GetTopTenPlayers(players);
+
 
             foreach (var player in players)
             {
@@ -33,6 +35,22 @@ namespace SoccerStats
                     )
                 );
             }
+
+            Console.WriteLine("\n The top ten players of the season are: \n");
+
+            foreach (var player in topTenPlayers)
+            {
+                Console.WriteLine(
+                    String.Format(
+                        "Name: {0} {1}, Points Per Game: {2}",
+                        player.firstName,
+                        player.LastName,
+                        player.PointsPerGame
+                        )
+                    );
+            }
+            fileName = Path.Combine(directory.FullName, "topTenPlayers.json");
+            SerialzePlayersToFile(topTenPlayers, fileName);
         }
 
         public static string ReadFile(string fileName)
@@ -102,6 +120,28 @@ namespace SoccerStats
                 players = serializer.Deserialize<List<Player>>(jsonReader);
             }
             return players; 
+        }
+
+        public static List<Player> GetTopTenPlayers(List<Player> players)
+        {
+            var topTenPlayers = new List<Player>();
+            players.Sort(new PlayerComparer());
+            for (int i = 0; i < 9; i++)
+            {
+                topTenPlayers.Add(players[i]);
+            }
+
+            return topTenPlayers;
+        }
+
+        public static void SerialzePlayersToFile(List<Player> players, String fileName)
+        {
+            var serializer = new JsonSerializer();
+            using (var writer = new StreamWriter(fileName))
+            using (var jsonWriter = new JsonTextWriter(writer))
+            {
+                serializer.Serialize(jsonWriter, players);
+            }
         }
     }
 }

@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="Player.cs" />
     <Compile Include="GameResult.cs" />
+    <Compile Include="PlayerComparer.cs" />
     <Compile Include="Program.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
